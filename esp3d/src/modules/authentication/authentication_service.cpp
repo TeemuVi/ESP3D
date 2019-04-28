@@ -101,7 +101,6 @@ level_authenticate_type AuthenticationService::authenticated_level(const  char *
     }
     return auth_type;
 #else
-    (void)pwd;
     return LEVEL_ADMIN;
 #endif //AUTHENTICATION_FEATURE
 }

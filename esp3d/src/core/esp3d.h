@@ -30,7 +30,7 @@ class Esp3D
 public:
     Esp3D();
     ~Esp3D();
-    bool begin(uint16_t startdelayms = 500);
+    bool begin(uint16_t startdelayms = 500, uint16_t recoverydelayms = 0);
     void handle();
     bool end();
     static bool reset();

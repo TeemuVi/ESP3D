@@ -34,12 +34,6 @@
 #if defined(FILESYSTEM_FEATURE)
 #include "../modules/filesystem/esp_filesystem.h"
 #endif //FILESYSTEM_FEATURE
-#ifdef CONNECTED_DEVICES_FEATURE
-#include "../modules/devices/devices_services.h"
-#endif //CONNECTED_DEVICES_FEATURE
-#ifdef DISPLAY_DEVICE
-#include "../modules/display/display.h"
-#endif //DISPLAY_DEVICE
 
 #include "esp3doutput.h"
 
@@ -58,22 +52,14 @@ Esp3D::~Esp3D()
 }
 
 //Begin which setup everything
-bool Esp3D::begin(uint16_t startdelayms)
+bool Esp3D::begin(uint16_t startdelayms, uint16_t recoverydelayms)
 {
     Hal::begin();
-    DEBUG_ESP3D_INIT
-
-    bool res = true;
-#if defined(CONNECTED_DEVICES_FEATURE)
-    if (!DevicesServices::begin()) {
-        log_esp3d("Error setup connected devices");
-        res = false;
-    }
-#endif //CONNECTED_DEVICES_FEATURE
     //delay() to avoid to disturb printer
     delay(startdelayms);
+    (void)recoverydelayms;
+    DEBUG_ESP3D_INIT
     log_esp3d("Mode %d", WiFi.getMode());
-
     if (!Settings_ESP3D::begin()) {
         log_esp3d("Need reset settings");
         reset();
@@ -86,27 +72,23 @@ bool Esp3D::begin(uint16_t startdelayms)
     //Serial service
     if (!serial_service.begin()) {
         log_esp3d("Error with serial service");
-        res = false;
+        return false;
     }
     //Setup Filesystem
 #if defined(FILESYSTEM_FEATURE)
     if (!ESP_FileSystem::begin()) {
         log_esp3d("Error with filesystem service");
-        res = false;
+        return false;
     }
 #endif //FILESYSTEM_FEATURE
     //Setup Network
 #if defined(WIFI_FEATURE) || defined(ETH_FEATURE)
     if (!NetConfig::begin()) {
         log_esp3d("Error setup network");
-        res = false;
+        return false;
     }
 #endif //WIFI_FEATURE
-#ifdef DISPLAY_DEVICE
-    esp3d_display.show_screenID(MAIN_SCREEN);
-    log_esp3d("Main screen");
-#endif //DISPLAY_DEVICE
-    return res;
+    return true;
 }
 
 //Process which handle all input
@@ -120,17 +102,11 @@ void Esp3D::handle()
 #if defined(WIFI_FEATURE) || defined(ETH_FEATURE)
     NetConfig::handle();
 #endif //WIFI_FEATURE || ETH_FEATURE
-#if defined(CONNECTED_DEVICES_FEATURE)
-    DevicesServices::handle();
-#endif //CONNECTED_DEVICES_FEATURE
 }
 
 //End ESP3D
 bool Esp3D::end()
 {
-#if defined(CONNECTED_DEVICES_FEATURE)
-    DevicesServices::end();
-#endif //CONNECTED_DEVICES_FEATURE
 #if defined(WIFI_FEATURE) || defined(ETH_FEATURE)
     NetConfig::end();
 #endif //WIFI_FEATURE || ETH_FEATURE

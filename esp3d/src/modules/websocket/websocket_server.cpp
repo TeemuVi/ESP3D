@@ -30,20 +30,9 @@
 
 WebSocket_Server websocket_terminal_server;
 
-void WebSocket_Server::pushMSG (const char * data)
-{
-    _websocket_server->broadcastTXT(data);
-}
-
-void WebSocket_Server::pushMSG (uint num, const char * data)
-{
-    _websocket_server->sendTXT(num, data);
-}
-
 void handle_Websocket_Terminal_Event(uint8_t num, uint8_t type, uint8_t * payload, size_t length)
 {
-    (void)payload;
-    (void)length;
+
     switch(type) {
     case WStype_DISCONNECTED:
         //Serial.printf("[%u] Disconnected!\n", num);
@@ -52,9 +41,9 @@ void handle_Websocket_Terminal_Event(uint8_t num, uint8_t type, uint8_t * payloa
         String s = "currentID:" + String(num);
         // send message to client
         websocket_terminal_server.set_currentID(num);
-        websocket_terminal_server.pushMSG(num, s.c_str());
+        websocket_terminal_server.Socket_Server()->sendTXT(num, s);
         s = "activeID:" + String(num);
-        websocket_terminal_server.pushMSG(s.c_str());
+        websocket_terminal_server.Socket_Server()->broadcastTXT(s);
     }
     break;
     case WStype_TEXT:
@@ -143,6 +132,11 @@ uint8_t WebSocket_Server::get_currentID()
 {
     return _current_id;
 }
+WebSocketsServer * WebSocket_Server::Socket_Server()
+{
+    return _websocket_server;
+}
+
 
 /*int WebSocket_Server::available(){
     return _RXbufferSize;
@@ -168,7 +162,7 @@ size_t WebSocket_Server::write(const uint8_t *buffer, size_t size)
         flush();
     }
     //need periodic check to force to flush in case of no end
-    for (uint i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         _TXbuffer[_TXbufferSize] = buffer[i];
         _TXbufferSize++;
     }

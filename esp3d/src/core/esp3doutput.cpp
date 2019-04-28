@@ -125,16 +125,16 @@ void ESP3DOutput::flush()
     case ESP_SERIAL_CLIENT:
         serial_service.flush();
         break;
-#ifdef HTTP_FEATURE
     case ESP_HTTP_CLIENT:
+#ifdef HTTP_FEATURE
         if (_webserver) {
             if (_headerSent && !_footerSent) {
                 _webserver->sendContent("");
                 _footerSent = true;
             }
         }
-        break;
 #endif //HTTP_FEATURE
+        break;
 #if defined (BLUETOOTH_FEATURE)
     case ESP_BT_CLIENT:
         bt_service.flush();
@@ -158,24 +158,13 @@ size_t ESP3DOutput::printLN(const char * s)
     if (!isOutput(_client)) {
         return 0;
     }
-    switch(_client) {
-    case ESP_HTTP_CLIENT:
-        if(strlen(s) > 0) {
-            println(s);
-            return strlen(s) + 1;
-        } else {
-            println(" ");
-            return strlen(s) + 2;
-        }
-        return 0;
-    case ESP_TELNET_CLIENT:
+    if (_client == ESP_TELNET_CLIENT) {
         print(s);
         println("\r");
         return strlen(s)+2;
-    default:
-        break;
+    } else {
+        return println(s);
     }
-    return println(s);
 }
 
 size_t ESP3DOutput::printMSG(const char * s)
@@ -184,9 +173,8 @@ size_t ESP3DOutput::printMSG(const char * s)
         return 0;
     }
     String display;
-#ifdef HTTP_FEATURE
     if (_client == ESP_HTTP_CLIENT) {
-
+#ifdef HTTP_FEATURE
         if (_webserver) {
             if (!_headerSent && !_footerSent) {
                 _webserver->sendHeader("Cache-Control","no-cache");
@@ -198,6 +186,7 @@ size_t ESP3DOutput::printMSG(const char * s)
         }
         return 0;
     }
+
 #endif //HTTP_FEATURE
     if (_client == ESP_PRINTER_LCD_CLIENT) {
         display = "M117 ";
@@ -230,10 +219,9 @@ size_t ESP3DOutput::printERROR(const char * s, int code_error)
     if (!isOutput(_client)) {
         return 0;
     }
-#ifdef HTTP_FEATURE
     _code = code_error;
     if (_client == ESP_HTTP_CLIENT) {
-
+#ifdef HTTP_FEATURE
         if (_webserver) {
             if (!_headerSent && !_footerSent) {
                 _webserver->sendHeader("Cache-Control","no-cache");
@@ -243,11 +231,10 @@ size_t ESP3DOutput::printERROR(const char * s, int code_error)
                 return strlen(s);
             }
         }
+
+#endif //HTTP_FEATURE
         return 0;
     }
-#else
-    (void)code_error;
-#endif //HTTP_FEATURE
     String display;
     switch(Settings_ESP3D::GetFirmwareTarget()) {
     case GRBL:
@@ -288,9 +275,8 @@ int ESP3DOutput::availableforwrite()
     case ESP_ALL_CLIENTS:
         return serial_service.availableForWrite();
     default :
-        break;
+        return 0;
     }
-    return  0;
 }
 size_t ESP3DOutput::write(uint8_t c)
 {
@@ -333,9 +319,8 @@ size_t ESP3DOutput::write(const uint8_t *buffer, size_t size)
         return 0;
     }
     switch (_client) {
-#ifdef HTTP_FEATURE
     case ESP_HTTP_CLIENT:
-
+#ifdef HTTP_FEATURE
         if (_webserver) {
             if (!_headerSent && !_footerSent) {
                 _webserver->setContentLength(CONTENT_LENGTH_UNKNOWN);
@@ -348,8 +333,8 @@ size_t ESP3DOutput::write(const uint8_t *buffer, size_t size)
                 _webserver->sendContent_P((const char*)buffer,size);
             }
         }
-        break;
 #endif //HTTP_FEATURE
+        break;
 #if defined (BLUETOOTH_FEATURE)
     case ESP_BT_CLIENT:
         if(bt_service.started()) {
@@ -378,7 +363,6 @@ size_t ESP3DOutput::write(const uint8_t *buffer, size_t size)
 #endif //TELNET_FEATURE
         return serial_service.write(buffer, size);
     default :
-        break;
+        return 0;
     }
-    return 0;
 }
