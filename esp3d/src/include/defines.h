@@ -36,9 +36,8 @@
 #define USE_SERIAL_2 3
 
 //Display
-#define OLED_I2C_SSD1306    	1
-#define OLED_I2C_SSDSH1106  	2
-#define TFT_SPI_ILI9341_320X240 3
+#define OLED_I2C_SSD1306    1
+#define OLED_I2C_SSDSH1106  2
 
 //File systems
 #define ESP_SPIFFS_FILESYSTEM       1

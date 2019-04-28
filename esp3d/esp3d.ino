@@ -1,5 +1,5 @@
 /*
-  esp3d
+  ESP3D ino file
 
   Copyright (c) 2014 Luc Lebosse. All rights reserved.
 
@@ -17,20 +17,3 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
-#include "src/core/esp3d.h"
-
-//global variable
-Esp3D myesp3d;
-
-//Setup
-void setup()
-{
-    myesp3d.begin();
-}
-
-//main loop
-void loop()
-{
-    myesp3d.handle();
-}

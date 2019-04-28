@@ -1,5 +1,5 @@
 /*
-  config.h - ESP3D configuration file
+  main esp3d core code
 
   Copyright (c) 2014 Luc Lebosse. All rights reserved.
 
@@ -18,29 +18,19 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _ESP3D_CONFIG_H
-#define _ESP3D_CONFIG_H
-#include <Arduino.h>
-#include "../include/defines.h"
-#include "../configuration.h"
-#include "../include/sanity_esp3d.h"
-#include "../core/hal.h"
-#include "../core/debug_esp3d.h"
-#include "../include/version.h"
+#include "core/esp3d.h"
 
-/************************************
- *
- * Additional Flags
- *
- * **********************************/
+//global variable
+Esp3D myesp3d;
 
-//Make Flag more generic
-#if defined(PIN_RESET_FEATURE) || defined(SD_RECOVERY_FEATURE)
-#define RECOVERY_FEATURE
-#endif //PIN_RESET_FEATURE || SD_RECOVERY_FEATURE
+//Setup
+void setup()
+{
+    myesp3d.begin();
+}
 
-#if defined(DISPLAY_DEVICE) || defined(DHT_DEVICE) || defined(RECOVERY_FEATURE)
-#define CONNECTED_DEVICES_FEATURE
-#endif //DISPLAY_DEVICE || DHT_DEVICE
-
-#endif //_ESP3D_CONFIG_H
+//main loop
+void loop()
+{
+    myesp3d.handle();
+}
