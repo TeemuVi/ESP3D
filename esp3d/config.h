@@ -67,13 +67,13 @@ extern HardwareSerial Serial2;
 //comment to disable
 //MDNS_FEATURE: this feature allow  type the name defined
 //in web browser by default: http:\\esp8266.local and connect
-#define MDNS_FEATURE
+//#define MDNS_FEATURE
 
 //SSDD_FEATURE: this feature is a discovery protocol, supported on Windows out of the box
-#define SSDP_FEATURE
+//#define SSDP_FEATURE
 
 //NETBIOS_FEATURE: this feature is a discovery protocol, supported on Windows out of the box
-#define NETBIOS_FEATURE
+//#define NETBIOS_FEATURE
 
 #ifdef ARDUINO_ARCH_ESP32
 #ifdef SSDP_FEATURE
@@ -85,13 +85,13 @@ extern HardwareSerial Serial2;
 #endif
 
 //CAPTIVE_PORTAL_FEATURE: In SoftAP redirect all unknow call to main page
-#define CAPTIVE_PORTAL_FEATURE
+//#define CAPTIVE_PORTAL_FEATURE
 
 //AUTHENTICATION_FEATURE: protect pages by login password
 //#define AUTHENTICATION_FEATURE
 
 //WEB_UPDATE_FEATURE: allow to flash fw using web UI
-#define WEB_UPDATE_FEATURE
+//#define WEB_UPDATE_FEATURE
 
 //SERIAL_COMMAND_FEATURE: allow to send command by serial
 #define SERIAL_COMMAND_FEATURE
@@ -111,16 +111,17 @@ extern HardwareSerial Serial2;
 #define DIRECT_PIN_FEATURE
 
 //INFO_MSG_FEATURE: catch the Info msg and filter it to specific table
-#define INFO_MSG_FEATURE
+//#define INFO_MSG_FEATURE
 
 //ERROR_MSG_FEATURE: catch the error msg and filter it to specific table
-#define ERROR_MSG_FEATURE
+//#define ERROR_MSG_FEATURE
 
 //STATUS_MSG_FEATURE: catch the status msg and filter it to specific table
-#define STATUS_MSG_FEATURE
+//#define STATUS_MSG_FEATURE
 
 //Serial rx buffer size is 256 but can be extended
-#define SERIAL_RX_BUFFER_SIZE 512
+#define SERIAL_RX_BUFFER_SIZE 256
+//#define SERIAL_RX_BUFFER_SIZE 512
 
 #ifdef ARDUINO_ARCH_ESP32
 #ifdef SSDP_FEATURE
