@@ -18,14 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #include "../../include/esp3d_config.h"
-#if defined (NOTIFICATION_FEATURE)
+#if defined (WIFI_FEATURE) || defined (ETH_FEATURE)
 #include "../commands.h"
 #include "../esp3doutput.h"
 #include "../settings_esp3d.h"
 #include "../../modules/authentication/authentication_service.h"
-#include "../../modules/notifications/notifications_service.h"
 //Send Notification
-//[ESP600]msg [pwd=<admin password>]
+//[ESP600]<msg>[pwd=<admin password>]
 bool Commands::ESP600(const char* cmd_params, level_authenticate_type auth_type, ESP3DOutput * output)
 {
     bool response = true;
@@ -44,15 +43,10 @@ bool Commands::ESP600(const char* cmd_params, level_authenticate_type auth_type,
         output->printERROR ("Invalid message!");
         return false;
     } else {
-        parameter = get_param (cmd_params, "");
-        if (notificationsservice.sendMSG("ESP3D Notification", parameter.c_str())) {
-            output->printMSG ("ok");
-        } else {
-            output->printERROR ("Cannot send message!");
-            return false;
-        }
+        //TODO
+        output->printMSG ("ok");
     }
     return response;
 }
 
-#endif //NOTIFICATION_FEATURE
+#endif //WIFI_FEATURE || ETH_FEATURE

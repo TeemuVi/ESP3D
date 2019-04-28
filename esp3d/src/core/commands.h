@@ -70,7 +70,6 @@ public:
 #if defined(TIMESTAMP_FEATURE)
     bool ESP140(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
 #endif //TIMESTAMP_FEATURE
-    bool ESP150(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
 #ifdef DIRECT_PIN_FEATURE
     bool ESP201(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
 #endif //DIRECT_PIN_FEATURE
@@ -88,10 +87,9 @@ public:
     bool ESP550(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
     bool ESP555(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
 #endif //AUTHENTICATION_FEATURE
-#if defined(NOTIFICATION_FEATURE)
+#if defined( WIFI_FEATURE) || defined (ETH_FEATURE)
     bool ESP600(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
-    bool ESP610(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
-#endif //NOTIFICATION_FEATURE
+#endif //WIFI_FEATURE || ETH_FEATURE
 #if defined(FILESYSTEM_FEATURE)
     bool ESP710(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);
     bool ESP720(const char* cmd_params, level_authenticate_type auth_level, ESP3DOutput * output);

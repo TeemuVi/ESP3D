@@ -42,7 +42,6 @@
 #endif //DISPLAY_DEVICE
 
 #include "esp3doutput.h"
-#include "../modules/boot_delay/boot_delay.h"
 
 bool Esp3D::restart = false;
 
@@ -59,11 +58,11 @@ Esp3D::~Esp3D()
 }
 
 //Begin which setup everything
-bool Esp3D::begin()
+bool Esp3D::begin(uint16_t startdelayms)
 {
-    BootDelay bd;
     Hal::begin();
     DEBUG_ESP3D_INIT
+
     bool res = true;
 #if defined(CONNECTED_DEVICES_FEATURE)
     if (!DevicesServices::begin()) {
@@ -71,8 +70,8 @@ bool Esp3D::begin()
         res = false;
     }
 #endif //CONNECTED_DEVICES_FEATURE
-    //delayto avoid to disturb printer
-    bd.begin(/*&outserialfn*/);
+    //delay() to avoid to disturb printer
+    delay(startdelayms);
     log_esp3d("Mode %d", WiFi.getMode());
 
     if (!Settings_ESP3D::begin()) {

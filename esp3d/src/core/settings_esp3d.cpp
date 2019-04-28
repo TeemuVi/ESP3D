@@ -43,22 +43,14 @@
 #endif // SETTINGS_IN_PREFERENCES
 
 //Current Settings Version
-#define CURRENT_SETTINGS_VERSION "ESP3D04"
+#define CURRENT_SETTINGS_VERSION "ESP3D03"
 
 //boundaries
-#define MAX_DHT_INTERVAL            60000
+#define MAX_DHT_INTERVAL            1000
 #define MIN_DHT_INTERVAL            0
 #define MAX_LOCAL_PASSWORD_LENGTH   20
 #define MIN_LOCAL_PASSWORD_LENGTH   1
 #define MAX_VERSION_LENGTH          7 //ESP3DXX
-#define MAX_BOOT_DELAY				40000
-#define MIN_BOOT_DELAY				0
-#define MIN_NOTIFICATION_TOKEN_LENGTH 0
-#define MIN_NOTIFICATION_SETTINGS_LENGTH 0
-#define MAX_NOTIFICATION_TOKEN_LENGTH 63
-#define MAX_NOTIFICATION_SETTINGS_LENGTH 127
-#define MAX_SERVER_ADDRESS_LENGTH   128
-#define MIN_SERVER_ADDRESS_LENGTH   0
 
 
 //default byte values
@@ -100,10 +92,6 @@
 #define DEFAULT_IS_DIRECT_SD    0
 #define DEFAULT_HTTP_ON         1
 #define DEFAULT_TELNET_ON       1
-#define DEFAULT_NOTIFICATION_TYPE 0
-#define DEFAULT_NOTIFICATION_TOKEN1 ""
-#define DEFAULT_NOTIFICATION_TOKEN2 ""
-#define DEFAULT_NOTIFICATION_SETTINGS ""
 
 
 //default int values
@@ -112,7 +100,6 @@
 #define DEFAULT_HTTP_PORT       80L
 #define DEFAULT_TELNET_PORT     23L
 #define DEFAULT_DHT_INTERVAL    30000L
-#define DEFAULT_BOOT_DELAY	    10000L
 
 #ifdef WIFI_FEATURE
 //default string values
@@ -215,11 +202,6 @@ uint8_t Settings_ESP3D::get_default_byte_value(int pos)
     case ESP_RADIO_MODE:
         res = DEFAULT_ESP_RADIO_MODE;
         break;
-#ifdef NOTIFICATION_FEATURE
-    case ESP_NOTIFICATION_TYPE:
-        res = DEFAULT_NOTIFICATION_TYPE;
-        break;
-#endif //NOTIFICATION_FEATURE
 #if defined (WIFI_FEATURE) || defined (ETH_FEATURE)
     case ESP_STA_IP_MODE:
         res = DEFAULT_STA_IP_MODE;
@@ -307,9 +289,6 @@ uint32_t Settings_ESP3D::get_default_int32_value(int pos)
     case ESP_BAUD_RATE:
         res = DEFAULT_BAUD_RATE;
         break;
-    case ESP_BOOT_DELAY:
-        res = DEFAULT_BOOT_DELAY;
-        break;
 #if defined (WIFI_FEATURE) || defined (ETH_FEATURE)
     case ESP_AP_IP_VALUE:
     case ESP_STA_IP_VALUE:
@@ -348,9 +327,6 @@ uint32_t Settings_ESP3D::get_max_int32_value(int pos)
 {
     uint32_t res;
     switch(pos) {
-    case ESP_BOOT_DELAY:
-        res = MAX_BOOT_DELAY;
-        break;
 #ifdef HTTP_FEATURE
     case ESP_HTTP_PORT:
         res = MAX_HTTP_PORT;
@@ -377,9 +353,6 @@ uint32_t Settings_ESP3D::get_min_int32_value(int pos)
 {
     uint32_t res;
     switch(pos) {
-    case ESP_BOOT_DELAY:
-        res = MIN_BOOT_DELAY;
-        break;
 #ifdef HTTP_FEATURE
     case ESP_HTTP_PORT:
         res = MIN_HTTP_PORT;
@@ -420,7 +393,6 @@ uint8_t Settings_ESP3D::get_max_byte(int pos)
     }
     return res;
 }
-
 uint8_t Settings_ESP3D::get_min_byte(int pos)
 {
     uint8_t res;
@@ -441,6 +413,7 @@ uint8_t Settings_ESP3D::get_min_byte(int pos)
     return res;
 }
 
+
 //Default value for a ip setting
 uint32_t Settings_ESP3D::get_default_IP_value(int pos)
 {
@@ -456,7 +429,6 @@ const String & Settings_ESP3D::get_default_string_value(int pos)
     case ESP_HOSTNAME:
         res = DEFAULT_HOSTNAME;
         break;
-#endif //WIFI_FEATURE || ETH_FEATURE || defined (ETH_FEATURE)
 #ifdef TIMESTAMP_FEATURE
     case ESP_TIME_SERVER1:
         res = DEFAULT_TIME_SERVER1;
@@ -468,17 +440,7 @@ const String & Settings_ESP3D::get_default_string_value(int pos)
         res = DEFAULT_TIME_SERVER3;
         break;
 #endif //TIMESTAMP_FEATURE
-#ifdef NOTIFICATION_FEATURE
-    case ESP_NOTIFICATION_TOKEN1:
-        res = DEFAULT_NOTIFICATION_TOKEN1;
-        break;
-    case ESP_NOTIFICATION_TOKEN2:
-        res = DEFAULT_NOTIFICATION_TOKEN2;
-        break;
-    case ESP_NOTIFICATION_SETTINGS:
-        res = DEFAULT_NOTIFICATION_SETTINGS;
-        break;
-#endif //NOTIFICATION_FEATURE
+#endif //WIFI_FEATURE || ETH_FEATURE || defined (ETH_FEATURE)
 #if defined (WIFI_FEATURE)
     case ESP_STA_SSID:
         res = DEFAULT_STA_SSID;
@@ -527,15 +489,7 @@ uint8_t Settings_ESP3D::get_max_string_size(int pos)
         res =  MAX_SERVER_ADDRESS_LENGTH;
         break;
 #endif //TIMESTAMP_FEATURE
-#ifdef NOTIFICATION_FEATURE
-    case ESP_NOTIFICATION_TOKEN1:
-    case ESP_NOTIFICATION_TOKEN2:
-        res = MAX_NOTIFICATION_TOKEN_LENGTH;
-        break;
-    case ESP_NOTIFICATION_SETTINGS:
-        res = MAX_NOTIFICATION_SETTINGS_LENGTH;
-        break;
-#endif //NOTIFICATION_FEATURE
+
 #if defined (WIFI_FEATURE)
     case ESP_STA_SSID:
     case ESP_AP_SSID:
@@ -570,16 +524,6 @@ uint8_t Settings_ESP3D::get_min_string_size(int pos)
     case ESP_HOSTNAME:
         res = MIN_HOSTNAME_LENGTH;
         break;
-#endif //WIFI_FEATURE || ETH_FEATURE || BLUETOOTH_FEATURE
-#ifdef NOTIFICATION_FEATURE
-    case ESP_NOTIFICATION_TOKEN1:
-    case ESP_NOTIFICATION_TOKEN2:
-        res = MIN_NOTIFICATION_TOKEN_LENGTH;
-        break;
-    case ESP_NOTIFICATION_SETTINGS:
-        res = MIN_NOTIFICATION_SETTINGS_LENGTH;
-        break;
-#endif //NOTIFICATION_FEATURE
 #ifdef TIMESTAMP_FEATURE
     case ESP_TIME_SERVER1:
     case ESP_TIME_SERVER2:
@@ -587,6 +531,7 @@ uint8_t Settings_ESP3D::get_min_string_size(int pos)
         res =  MIN_SERVER_ADDRESS_LENGTH;
         break;
 #endif //TIMESTAMP_FEATURE
+#endif //WIFI_FEATURE || ETH_FEATURE || BLUETOOTH_FEATURE
 #if defined (WIFI_FEATURE)
     case ESP_STA_SSID:
     case ESP_AP_SSID:
@@ -931,16 +876,6 @@ bool Settings_ESP3D::reset()
     //Hostname
     Settings_ESP3D::write_string(ESP_HOSTNAME,Settings_ESP3D::get_default_string_value(ESP_HOSTNAME).c_str());
 #endif //WIFI_FEATURE ||  BLUETOOTH_FEATURE || ETH_FEATURE
-#ifdef NOTIFICATION_FEATURE
-    //Notification Type
-    Settings_ESP3D::write_byte(ESP_NOTIFICATION_TYPE,Settings_ESP3D::get_default_byte_value(ESP_NOTIFICATION_TYPE));
-    //Notification Token1
-    Settings_ESP3D::write_string(ESP_NOTIFICATION_TOKEN1,Settings_ESP3D::get_default_string_value(ESP_NOTIFICATION_TOKEN1).c_str());
-    //Notification Token2
-    Settings_ESP3D::write_string(ESP_NOTIFICATION_TOKEN2,Settings_ESP3D::get_default_string_value(ESP_NOTIFICATION_TOKEN2).c_str());
-    //Notification Settings
-    Settings_ESP3D::write_string(ESP_NOTIFICATION_SETTINGS,Settings_ESP3D::get_default_string_value(ESP_NOTIFICATION_SETTINGS).c_str());
-#endif //NOTIFICATION_FEATURE
     //radio mode
     Settings_ESP3D::write_byte(ESP_RADIO_MODE,Settings_ESP3D::get_default_byte_value(ESP_RADIO_MODE));
 #if defined (WIFI_FEATURE)
@@ -1021,9 +956,7 @@ bool Settings_ESP3D::reset()
     Settings_ESP3D::write_byte(ESP_DHT_TYPE,Settings_ESP3D::get_default_byte_value(ESP_DHT_TYPE));
     //DHT query interval
     Settings_ESP3D::write_uint32 (ESP_DHT_INTERVAL, Settings_ESP3D::get_default_int32_value(ESP_DHT_INTERVAL));
-#endif //DHT_DEVICE  
-    //Start Delay
-    Settings_ESP3D::write_uint32 (ESP_BOOT_DELAY, Settings_ESP3D::get_default_int32_value(ESP_BOOT_DELAY));
+#endif //DHT_DEVICE   
 #endif //SETTINGS_IN_EEPROM
     //set version in settings
     if (res) {

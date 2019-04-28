@@ -63,9 +63,7 @@ DNSServer dnsServer;
 #ifdef TIMESTAMP_FEATURE
 #include "../time/time_server.h"
 #endif //TIMESTAMP_FEATURE
-#ifdef NOTIFICATION_FEATURE
-#include "../notifications/notifications_service.h"
-#endif //NOTIFICATION_FEATURE
+
 
 bool NetServices::_started = false;
 
@@ -233,9 +231,6 @@ bool NetServices::begin()
         output.printMSG(stmp.c_str());
     }
 #endif //SSDP_FEATURE
-#ifdef NOTIFICATION_FEATURE
-    notificationsservice.begin();
-#endif //NOTIFICATION_FEATURE
     if (!res) {
         end();
     }
@@ -248,9 +243,6 @@ void NetServices::end()
         return;
     }
     _started = false;
-#ifdef NOTIFICATION_FEATURE
-    notificationsservice.end();
-#endif //NOTIFICATION_FEATURE
 #ifdef CAPTIVE_PORTAL_FEATURE
     if(WiFi.getMode() == WIFI_AP) {
         dnsServer.stop();
@@ -315,9 +307,6 @@ void NetServices::handle()
 #ifdef TELNET_FEATURE
         telnet_server.handle();
 #endif //TELNET_FEATURE
-#ifdef NOTIFICATION_FEATURE
-        notificationsservice.handle();
-#endif //NOTIFICATION_FEATURE
     }
 }
 
