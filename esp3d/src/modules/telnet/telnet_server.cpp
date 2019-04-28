@@ -77,9 +77,7 @@ Telnet_Server::Telnet_Server()
 {
     _buffer_size = 0;
     _started = false;
-    _isdebug = false;
     _port = 0;
-    _buffer = nullptr;
     _telnetserver = nullptr;
 }
 Telnet_Server::~Telnet_Server()
@@ -90,22 +88,11 @@ Telnet_Server::~Telnet_Server()
 /**
  * begin Telnet setup
  */
-bool Telnet_Server::begin(uint16_t port, bool debug)
+bool Telnet_Server::begin()
 {
     end();
     //Get telnet port
-    if (port == 0) {
-        _port = Settings_ESP3D::read_uint32(ESP_TELNET_PORT);
-    } else {
-        _port = port;
-    }
-    _isdebug = debug;
-    if (!_isdebug) {
-        _buffer= (uint8_t *)malloc(ESP3D_TELNET_BUFFER_SIZE +1);
-        if (!_buffer) {
-            return false;
-        }
-    }
+    _port = Settings_ESP3D::read_uint32(ESP_TELNET_PORT);
     //create instance
     _telnetserver= new WiFiServer(_port);
     if (!_telnetserver) {
@@ -126,16 +113,10 @@ void Telnet_Server::end()
     _started = false;
     _buffer_size = 0;
     _port = 0;
-    _isdebug = false;
     closeClient();
     if (_telnetserver) {
         delete _telnetserver;
         _telnetserver = nullptr;
-    }
-
-    if (_buffer) {
-        free(_buffer);
-        _buffer = nullptr;
     }
 }
 
@@ -168,7 +149,7 @@ void Telnet_Server::handle()
                 if (count > 0) {
                     push2buffer(sbuf, count);
                 }
-                //free buffer
+                //freen buffer
                 free(sbuf);
             }
         }
@@ -183,10 +164,6 @@ void Telnet_Server::handle()
 
 void Telnet_Server::flushbuffer()
 {
-    if (!_buffer || _started) {
-        _buffer_size = 0;
-        return;
-    }
     ESP3DOutput output(ESP_TELNET_CLIENT);
     _buffer[_buffer_size] = 0x0;
     //dispatch command
@@ -197,9 +174,6 @@ void Telnet_Server::flushbuffer()
 
 void Telnet_Server::push2buffer(uint8_t * sbuf, size_t len)
 {
-    if (!_buffer) {
-        return;
-    }
     for (size_t i = 0; i < len; i++) {
         _lastflush = millis();
         //command is defined
@@ -238,7 +212,7 @@ size_t Telnet_Server::write(uint8_t c)
 
 size_t Telnet_Server::write(const uint8_t *buffer, size_t size)
 {
-    if (isConnected() && (size>0)) {
+    if (isConnected()) {
         if (availableForWrite() >= size) {
             //push data to connected telnet client
             return _telnetClients.write(buffer, size);

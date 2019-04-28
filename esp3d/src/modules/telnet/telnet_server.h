@@ -23,16 +23,15 @@
 
 class WiFiServer;
 class WiFiClient;
-#include "Print.h"
 
 #define ESP3D_TELNET_BUFFER_SIZE 1200
 
-class Telnet_Server : public Print
+class Telnet_Server
 {
 public:
     Telnet_Server();
     ~Telnet_Server();
-    bool begin(uint16_t port = 0, bool debug=false);
+    bool begin();
     void end();
     void handle();
     bool reset();
@@ -76,9 +75,8 @@ private:
     WiFiServer * _telnetserver;
     WiFiClient  _telnetClients;
     uint16_t _port;
-    bool _isdebug;
     uint32_t _lastflush;
-    uint8_t *_buffer;
+    uint8_t _buffer[ESP3D_TELNET_BUFFER_SIZE +1]; //keep space of 0x0 terminal
     size_t _buffer_size;
     void push2buffer(uint8_t * sbuf, size_t len);
     void flushbuffer();
