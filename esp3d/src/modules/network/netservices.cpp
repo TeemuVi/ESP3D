@@ -182,16 +182,13 @@ bool NetServices::begin()
         }
     }
 #endif //CAPTIVE_PORTAL_FEATURE
-
 #ifdef HTTP_FEATURE
     if (!HTTP_Server::begin()) {
         res= false;
         output.printERROR("HTTP server failed");
     } else {
-        if(HTTP_Server::started()) {
-            String stmp = "HTTP server started port " + String(HTTP_Server::port());
-            output.printMSG(stmp.c_str());
-        }
+        String stmp = "HTTP server started port " + String(HTTP_Server::port());
+        output.printMSG(stmp.c_str());
     }
 #endif //HTTP_FEATURE
 #ifdef TELNET_FEATURE
@@ -199,10 +196,8 @@ bool NetServices::begin()
         res= false;
         output.printERROR("Telnet server failed");
     } else {
-        if(telnet_server.started()) {
-            String stmp = "Telnet server started port " + String(telnet_server.port());
-            output.printMSG(stmp.c_str());
-        }
+        String stmp = "Telnet server started port " + String(telnet_server.port());
+        output.printMSG(stmp.c_str());
     }
 #endif //TELNET_FEATURE
 #ifdef WS_DATA_FEATURE
@@ -226,7 +221,7 @@ bool NetServices::begin()
 #endif //MDNS_FEATURE
 #ifdef SSDP_FEATURE
     //SSDP service presentation
-    if(WiFi.getMode() != WIFI_AP && HTTP_Server::started()) {
+    if(WiFi.getMode() != WIFI_AP) {
         //Add specific for SSDP
         String stmp = String(Hal::getChipID());
         SSDP.setSchemaURL ("description.xml");
@@ -234,13 +229,13 @@ bool NetServices::begin()
         SSDP.setName (hostname.c_str());
         SSDP.setURL ("/");
         SSDP.setDeviceType ("upnp:rootdevice");
-        // SSDP.setSerialNumber (stmp.c_str());
+        SSDP.setSerialNumber (stmp.c_str());
         //Any customization could be here
-        //  SSDP.setModelName (ESP_MODEL_NAME);
-        //  SSDP.setModelURL (ESP_MODEL_URL);
-        //   SSDP.setModelNumber (ESP_MODEL_NUMBER);
-        //   SSDP.setManufacturer (ESP_MANUFACTURER_NAME);
-        //   SSDP.setManufacturerURL (ESP_MANUFACTURER_URL);
+        SSDP.setModelName (ESP_MODEL_NAME);
+        SSDP.setModelURL (ESP_MODEL_URL);
+        SSDP.setModelNumber (ESP_MODEL_NUMBER);
+        SSDP.setManufacturer (ESP_MANUFACTURER_NAME);
+        SSDP.setManufacturerURL (ESP_MANUFACTURER_URL);
         SSDP.begin();
         stmp = "SSDP started with '" + hostname + "'";
         output.printMSG(stmp.c_str());

@@ -62,6 +62,7 @@ bool Commands::ESP130(const char* cmd_params, level_authenticate_type auth_type,
                     output->printERROR ("Set failed!");
                     response = false;
                 }
+
                 output->printMSG ("ok");
             }
         }
