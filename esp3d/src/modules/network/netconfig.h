@@ -66,7 +66,6 @@ public:
     static bool begin();
     static void end();
     static void handle();
-    static uint8_t getMode();
     static bool started()
     {
         return _started;
@@ -77,7 +76,6 @@ private :
     static bool _needReconnect2AP;
     static bool _events_registered;
     static bool _started;
-    static uint8_t _mode;
 };
 
 #endif //_NET_CONFIG_H
